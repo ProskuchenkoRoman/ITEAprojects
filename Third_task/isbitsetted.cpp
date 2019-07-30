@@ -1,6 +1,4 @@
 #include <iostream>
-#include <cstdlib>
-
 
 int main() {
   unsigned long int variable;

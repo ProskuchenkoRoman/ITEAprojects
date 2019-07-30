@@ -1,8 +1,4 @@
 #include <iostream>
-#include <cstdlib>
-//#include <cmath>
-
-//using namespace std;
 
 int is_it_even_num (int var) {
   if (var % 2) {
@@ -10,7 +6,6 @@ int is_it_even_num (int var) {
   } else {
     return 1;
   }
-
 }
 
 int main() {
@@ -23,14 +18,14 @@ int main() {
   floor = (last_level_of_tree + 1) / 2;
   int stars_on_level= 0;
   for (floor ; floor > 0 ; floor--) {
-    for(int space=0 ; space < (floor - 1); space++){
+    for(int space=0 ; space < (floor - 1); space++) {
       std::cout << " ";
     }
     for (int stars=0 ; stars <= stars_on_level ; ++stars) {
       std::cout << "*";
     }
     stars_on_level=stars_on_level + 2;
-    for(int space=0; space < (floor - 1); space++){
+    for(int space=0; space < (floor - 1); space++) {
       std::cout << " ";
     }
     std::cout << "\n";
