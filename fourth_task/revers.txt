@@ -1,0 +1,28 @@
+#include <iostream>
+
+int main()
+{
+  std::string array;
+  std::getline ( std::cin, array );
+  int array_len = sizeof(array) / sizeof(array[0])-1;
+  while(array_len >= 0) {
+    std::cout << array[array_len--];
+  }
+}
+//---------------------------------------------------------
+#include <iostream>
+
+int main()
+{
+  char arr[100] {};
+  int array_len=0;
+  std::cin >> arr;
+  while(arr[array_len] != '\0') {
+    ++array_len;
+  }
+  --array_len;
+  while(array_len >= 0) {
+    std::cout << arr[array_len--];
+  }
+}
+

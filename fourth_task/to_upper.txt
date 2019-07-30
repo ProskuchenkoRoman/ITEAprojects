@@ -1,0 +1,16 @@
+#include <iostream>
+
+int main()
+{
+  char array[100];
+  int i=0;
+  std::cin >> array;
+  while (array[i] != '\0') {
+    if ((array[i] >= 97) && (array[i] <= 122)) {
+      std::cout << (char)(array[i] - 32);
+    } else {
+      std::cout << array[i];
+    }
+  ++i;
+}
+}
