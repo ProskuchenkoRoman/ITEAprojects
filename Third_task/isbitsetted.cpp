@@ -7,9 +7,6 @@ int main() {
   std::cin >> variable;
   std::cin >> shift;
   std::cout << "\n";
-  if ((variable >> (shift - 1)) & 1) {
-    std::cout << "Yes";
-  } else {
-    std::cout << "No";
-  }
+  bool is_set = (variable >> (shift - 1)) & 1;
+  std::cout << (is_set ? "Yes \n"  : "No \n");
 }
