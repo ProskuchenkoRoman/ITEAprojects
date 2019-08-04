@@ -12,5 +12,5 @@ int main()
       std::cout << array[i];
     }
   ++i;
-}
+  }
 }
