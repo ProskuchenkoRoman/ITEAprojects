@@ -8,13 +8,10 @@ int it_is_even_num (int var) {
   }
 }
 
-int sum_of_digits(unsigned long int variable) {
+int sum_of_digits(unsigned long int variable){
   unsigned int divider=10;
   unsigned int result=0;
-  while (true) {
-    if (variable < divider/10) {
-      break;
-    }
+  while (!(variable < divider/10)) {
     result = result + (variable % divider) / (divider / 10);
     divider = divider * 10;
   }
@@ -26,10 +23,10 @@ int main() {
   std::cout << "Please, enter your number: ";
   std::cin >> number;
   int max_sum_of_digits = sum_of_digits (number);
-  it_is_even_num(number) ? counter = number / 2 : counter = (number - 1) / 2;
+  counter = it_is_even_num(number) ? number / 2 : (number - 1) / 2;
   for (;counter>=1;--counter) {
-    if (!(number % counter))
-    sum_of_digits(counter) > max_sum_of_digits ? max_sum_of_digits = sum_of_digits(counter) : 0;
+    if (!(number % counter)) {
+    max_sum_of_digits = sum_of_digits(counter) > max_sum_of_digits ? sum_of_digits(counter):max_sum_of_digits;
   }
   std::cout << "Result:";
   std::cout << max_sum_of_digits;
