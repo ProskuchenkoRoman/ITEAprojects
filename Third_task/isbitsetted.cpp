@@ -2,7 +2,7 @@
 
 int main() {
   unsigned long int variable;
-  int shift = 0; // Почему то с char не работает.
+  int shift = 0;
   std::cout << "Please, enter variable and possition of bit which you want know: ";
   std::cin >> variable;
   std::cin >> shift;
