@@ -6,7 +6,9 @@ int GetCorrectValueFromStream() {
   while(!(std::cin >> number)) {
     std::cout << "It isn't integer, please try again: ";
     std::cin.clear();
-    while (std::cin.get() != '\n');
+    while (std::cin.get() != '\n') {
+      ;
+    }
   }
   return number;
 }
