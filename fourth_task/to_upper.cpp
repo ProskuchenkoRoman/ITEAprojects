@@ -2,14 +2,11 @@
 
 void to_upper_case(const char* arr) {
   if (arr != nullptr ){
-  unsigned int i=0;
+  const char diff_between_upper_and_lower = 'a' - 'A';
   while (*arr != '\0') {
     const char ch = *arr++;
-    if ((ch >= 'a') && (ch <= 'z')) {
-      std::cout << (char)(ch - 32);
-    } else {
-      std::cout << ch;
-    }
+    bool is_lower = (ch >='a') && (ch <='z');
+    std::cout << (char)(is_lower ? ch - diff_between_upper_and_lower : ch);
   }
 }
 }
