@@ -1,31 +1,28 @@
 #include <iostream>
+#include <cmath>
 
 int main() {
-  signed long int variable;
+  long variable;
   std::cout << "Please, enter value which you want revers(ex. 321 => 123): ";
   std::cin >> variable;
-  std::cout << "\n";
-  int divider=10;
-  unsigned int result=0;
+  unsigned long divider=10;
   int counter=0;
+  long rev_val = 0;
   bool negative = false;
   if (variable < 0) {
-    variable = variable * (-1);
+    variable *=-1;
     negative = true;
   }
-  while (true) {
-    if (variable < divider/10) {
-      break;
-    }
-    int tmp = (variable % divider) / (divider / 10);
-    if (negative) {
-      std::cout << "-";
-      std::cout << tmp;
-      negative = !negative;
-    } else {
-      std::cout << tmp;
-    }
-    counter++;
-    divider = divider * 10;
+  while ((int)(variable/pow(10,counter))) {
+  ++counter;
   }
+  divider = 10;
+  while (counter>=0) {
+    rev_val +=((variable % divider) / (divider / 10)) * pow(10,counter);
+    --counter;
+    divider *= 10;
+  }
+  rev_val = (rev_val + 1)/10;
+  rev_val = negative ? -rev_val : rev_val;
+  std::cout << "\n" << rev_val;
 }
