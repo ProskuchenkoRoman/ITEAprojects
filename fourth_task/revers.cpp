@@ -16,7 +16,7 @@ void print_reversed_utterance(char* arr) {
       ++count;
     }
     i = 0;
-    while (*(arr+i)!='\0'){
+    while (*(arr+i)!='\0') {
       std::cout << *(arr+i);
       ++i;
     }

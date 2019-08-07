@@ -3,13 +3,13 @@
 void to_upper_case(const char* arr) {
   if (arr != nullptr ){
   unsigned int i=0;
-  while (*(arr + i) != '\0') {
-    if ((*(arr + i) >= 'a') && (*(arr + i) <= 'z')) {
-      std::cout << (char)(*(arr + i) - 32);
+  while (*arr != '\0') {
+    const char ch = *arr++;
+    if ((ch >= 'a') && (ch <= 'z')) {
+      std::cout << (char)(ch - 32);
     } else {
-      std::cout << *(arr + i);
+      std::cout << ch;
     }
-  ++i;
   }
 }
 }
