@@ -1,25 +1,19 @@
 #include <iostream>
 
 void print_reversed_utterance(char* arr) {
-  if (arr != nullptr ){
+  if (arr != nullptr ) {
     unsigned int i = 0;
     unsigned int count = 0;
-    char tmp = 0;
-    while (*(arr+i)!='\0'){
-      ++i;
+    uint16_t count_symbol_in_array = 0;
+
+    for (count_symbol_in_array = 0; arr[count_symbol_in_array] != '\0'; ++count_symbol_in_array) {
+      ;
     }
-    --i;
-    while (count <= (int)(i/2)){
-      tmp = *(arr + count);
-      *(arr + count) = *(arr + i - count);
-      *(arr + i - count) = tmp;
-      ++count;
-    }
-    i = 0;
-    while (*(arr+i)!='\0') {
-      std::cout << *(arr+i);
-      ++i;
-    }
+    for (char *begin = arr, *end = arr + (count_symbol_in_array  - 1);
+       begin <= end; ++begin, --end) {
+    std::swap(*begin, *end);
+  }
+    std::cout << arr << std::endl;
   }
 }
 
