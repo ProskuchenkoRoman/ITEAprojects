@@ -24,6 +24,7 @@ if (InputArray == nullptr) return;
 int main() {
   const unsigned ARRAY_COLUMN = 4;
   const unsigned ARRAY_LINE = 4;
+  std::cout << "Hello! Please enter string which you want to encrypt and decrypt: ";
   std::string s;
   std::getline ( std::cin, s );
   unsigned NumberOfChar = 0;
@@ -44,5 +45,6 @@ int main() {
   for (uint32_t i = 0; i < NumberOfParts * ARRAY_COLUMN * ARRAY_LINE; ++i) {
     std::cout << ptr[i];
   }
+  free(ptr);
 }
 
