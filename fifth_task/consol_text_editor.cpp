@@ -160,14 +160,12 @@ std::cout << "Try first command:";
   ClearArray(command,COMMAND_SIZE);
   std::cin >> command;
   if (StringComapare(command, PRINT_COMAND, StringLength(PRINT_COMAND))) {
+    ClearArray(InpBuf, BUF_SIZE);
     scanf("%[^\n]",InpBuf);
-    for (unsigned i = 0; i < BUF_SIZE; ++i) {
+    for (unsigned i = 0; i < (BUF_SIZE - 1); ++i) {
       InpBuf[i]=InpBuf[i + 1];
-      if (((int)InpBuf[i]) == 0) {
-        InpBuf[i] = '\0';
-      }
     }
-    PushApart(text, TEXT_SIZE, PointerInText, (ArrayLength(InpBuf,BUF_SIZE) - 1) );
+    PushApart(text, TEXT_SIZE, PointerInText, ArrayLength(InpBuf,BUF_SIZE));
     InputPrint (text, InpBuf, &PointerInText,BUF_SIZE);
     continue;
   }
