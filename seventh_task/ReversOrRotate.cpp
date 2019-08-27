@@ -12,13 +12,13 @@ string revrot(string* str,const int SZ) {
   for(size_t i = 0; i < SZ; ++i) {
     sum1 += pow((int)(str->at(i)-'0'), 2);
   }
-  for(size_t i = SZ; i < SZ; ++i) {
+  for(size_t i = SZ; i < str->length(); ++i) {
     sum2 += pow((int)(str->at(i)-'0'), 2);
   }
   if (!(sum1 % 2)) {
     std::reverse(str->begin(), str->begin() + SZ - 1);
   } else {
-    str->insert(str->cbegin() + SZ - 1, str->at(0));
+    str->insert(str->cbegin() + SZ, str->at(0));
     str->erase(0, 1);
   }
   if (!(sum2 % 2)) {
