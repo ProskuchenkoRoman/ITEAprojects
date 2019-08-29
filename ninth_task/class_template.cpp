@@ -9,7 +9,7 @@ struct stackcell {
 template<typename Type>
 class stack {
   public:
-  Type push(Type InputVar) {
+  unsigned long push(Type InputVar) {
     stackcell<Type>* NextPtr = (stackcell<Type>*)malloc(sizeof(stackcell<Type>));
     if (nullptr == NextPtr) {
       return 0;
