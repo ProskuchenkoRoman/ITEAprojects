@@ -41,6 +41,7 @@ class stack {
 
 int main() { 
   stack<float> stack;
+  std::cout << "Stack:" << '\n';
   std::cout << stack.push(12.1) << '\n';
   std::cout << stack.push(13.1) << '\n';
   std::cout << stack.push(14.1) << '\n';
