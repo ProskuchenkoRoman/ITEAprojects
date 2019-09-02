@@ -56,14 +56,13 @@ bool ArrayShift(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POI
   return true;
 }
 
-void InputPrint (char* text, char* buf, unsigned int& PointerInText, const unsigned BUF_SIZE) {
+void InputPrint (char* text, char* buf, unsigned& PointerInText) {
   if ((nullptr != text) && (nullptr != buf) && (text != buf)) {
-    unsigned counter = 0;
-    for (unsigned i = 0; i < StringLength(buf); ++i) {
+    const unsigned BUF_SIZE = StringLength(buf);
+    for (unsigned i = 0; i < BUF_SIZE; ++i) {
       text[PointerInText + i] = buf[i];
-      ++counter;
     }
-    PointerInText += counter;
+    PointerInText += BUF_SIZE;
   }
 }
 
@@ -76,7 +75,6 @@ void SelectText (unsigned int* SelectStart,unsigned int* SelectLength) {
 
 void CopyTextFromArrayToArray (char* FromArr, char* ToArr, const unsigned int START_POINT, const unsigned int LENGTH) {
   if ((nullptr != FromArr) && (nullptr != ToArr) && (ToArr != FromArr)) {
-    ClearArray(ToArr);
     for(unsigned int i = 0; i < LENGTH; ++i) {
       ToArr[i] = FromArr[i + START_POINT - 1];
     }
@@ -163,7 +161,7 @@ std::cout << "Try first command:";
       InpBuf[i]=InpBuf[i + 1];
     }
     if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf))) {
-    InputPrint (text, InpBuf, PointerInText,BUF_SIZE);
+    InputPrint (text, InpBuf, PointerInText);
     }
     continue;
   }
@@ -180,8 +178,8 @@ std::cout << "Try first command:";
   }
 //--------------------------------------------------------------------
   if (StringComapare(command, PASTE_COMAND)) {
-    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf))) {
-    InputPrint (text, buffer, PointerInText, BUF_SIZE);
+    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(buffer))) {
+    InputPrint (text, buffer, PointerInText);
     }
     SelectStart = 0;
     SelectLength = 0;
@@ -220,4 +218,3 @@ std::cout << "Try first command:";
 
   }
 }
-
