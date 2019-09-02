@@ -1,5 +1,7 @@
 #include <iostream>
 
+//g++ -std=c++14 -Wall -Werror -pedantic -O2  consol_text_editor.cpp
+
 unsigned StringLength(const char* ARRAY) {
   if (ARRAY != nullptr) {
     unsigned i = 0;
@@ -8,65 +10,60 @@ unsigned StringLength(const char* ARRAY) {
     }
     return i;
   }
-  return 0;
+  return false;
 }
 
-bool StringComapare(const char* ARRAY1, const char* ARRAY2,const unsigned LENGTH2) {
+bool StringComapare(const char* ARRAY1, const char* ARRAY2) {
   if ((ARRAY1 != nullptr) && (ARRAY2 != nullptr)  && (ARRAY2 != ARRAY1)) {
+    const unsigned LENGTH1 = StringLength (ARRAY1);
+    const unsigned LENGTH2 = StringLength (ARRAY2);
+    if (LENGTH1 != LENGTH2) return false;
     for (unsigned i = 0; i <= LENGTH2 ; ++i) {
-      if (ARRAY1[i] != ARRAY2[i]) return 0;
+      if (ARRAY1[i] != ARRAY2[i]) return false;
     }
-    return 1;
+    return true;
   }
-  return 0;
+  return false;
 }
 
-void PrintTextFromArray(char* text, const unsigned TEXT_SIZE) {
-  if (text != nullptr) {
-  for(int i = 0; i < TEXT_SIZE ; ++i) {
-    std::cout << text[i];
+void PrintTextFromArray(char* text) {
+  if (nullptr == text) return;
+  unsigned i = 0;
+  while (text[i]) {
+    std::cout << text[i++];
   }
     std::cout << "\n";
-  }
 }
 
-void ClearArray(char* arr, const unsigned ARRAY_SIZE) {
+void ClearArray(char* arr) {
   if (arr != nullptr) {
-    for (unsigned i = 0; i < ARRAY_SIZE; ++i) {
-        arr[i] = '\0';
+    unsigned i = 0;
+    while (arr[i]) {
+        arr[i++] = '\0';
     }
   }
 }
 
-int ArrayLength(const char* ARRAY, const unsigned ARRAY_SIZE) {
-  if (ARRAY != nullptr) {
-    unsigned LastCharPosition = 0;
-    for (unsigned i = 0; i < ARRAY_SIZE; ++i) {
-      if (ARRAY[i] > ' ') {
-        LastCharPosition = i;
-      }
-    }
-    return LastCharPosition + 1;
+bool ArrayShift(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POINT, const unsigned SIZE) {
+  if (nullptr == Array) return 0;
+  if ((START_POINT + SIZE) > ARRAY_SIZE) {
+    std::cout << "This buffer is full.";
+    return false;
   }
-  return 0;
+  for (unsigned i = 0; (ARRAY_SIZE - SIZE - i) > START_POINT ; ++i) {
+    Array[ARRAY_SIZE - i - 1] = Array[ARRAY_SIZE - i - SIZE - 1];
+  }
+  return true;
 }
 
-void PushApart(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POINT, const unsigned SIZE) {
-  if (Array != nullptr) {
-    for (unsigned i = 0; (ARRAY_SIZE - SIZE - i) > START_POINT ; ++i) {
-      Array[ARRAY_SIZE - i - 1] = Array[ARRAY_SIZE - i - SIZE - 1];
-    }
-  }
-}
-
-void InputPrint (char* text, char* buf, unsigned int* PointerInText, const unsigned BUF_SIZE) {
-  if ((nullptr != text) && (nullptr != buf) && (nullptr != PointerInText) && (text != buf)) {
+void InputPrint (char* text, char* buf, unsigned int& PointerInText, const unsigned BUF_SIZE) {
+  if ((nullptr != text) && (nullptr != buf) && (text != buf)) {
     unsigned counter = 0;
-    for (unsigned i = 0; i < ArrayLength(buf,BUF_SIZE); ++i) {
-      text[*PointerInText + i] = buf[i];
+    for (unsigned i = 0; i < StringLength(buf); ++i) {
+      text[PointerInText + i] = buf[i];
       ++counter;
     }
-    *PointerInText += counter;
+    PointerInText += counter;
   }
 }
 
@@ -77,30 +74,30 @@ void SelectText (unsigned int* SelectStart,unsigned int* SelectLength) {
   }
 }
 
-void CopyTextFromArrayToArray (char* FromArr, char* ToArr, unsigned int StartPoint, unsigned int length) {
+void CopyTextFromArrayToArray (char* FromArr, char* ToArr, const unsigned int START_POINT, const unsigned int LENGTH) {
   if ((nullptr != FromArr) && (nullptr != ToArr) && (ToArr != FromArr)) {
-    ClearArray(ToArr, length);
-    for(unsigned int i = 0; i < length; ++i) {
-      ToArr[i] = FromArr[i + StartPoint - 1];
+    ClearArray(ToArr);
+    for(unsigned int i = 0; i < LENGTH; ++i) {
+      ToArr[i] = FromArr[i + START_POINT - 1];
     }
   }
 }
 
-void MovePointer(char* command,unsigned int* PointerInText,const unsigned TEXT_SIZE, const unsigned COMMAND_SIZE) {
+void MovePointer(char* command,unsigned* PointerInText,const unsigned TEXT_SIZE, const unsigned COMMAND_SIZE) {
   if ((nullptr != command) && (nullptr != PointerInText)) {
     const char* LEFT_COMAND = "left";
     const char* RIGHT_COMAND = "right";
-    ClearArray(command, COMMAND_SIZE);
+    ClearArray(command);
     std::cin >> command;
     unsigned int shift;
     std::cin >> shift;
-    if (StringComapare(command, LEFT_COMAND, StringLength(LEFT_COMAND))) {
+    if (StringComapare(command, LEFT_COMAND)) {
       if (shift > *PointerInText) {
         std::cout << "Too big shift in left. "<< shift << " should be less/equal than " << *PointerInText << ". Try again: \n";
         return;
       }
     *PointerInText = *PointerInText - shift;
-    } else if (StringComapare(command, RIGHT_COMAND, StringLength(RIGHT_COMAND))) {
+    } else if (StringComapare(command, RIGHT_COMAND)) {
       if (shift > (TEXT_SIZE - *PointerInText)) {
         std::cout << "Too big shift in right. "<< shift << " should be greater than " << *PointerInText << ". Try again: \n";
         return;
@@ -113,14 +110,14 @@ void MovePointer(char* command,unsigned int* PointerInText,const unsigned TEXT_S
   }
 }
 
-void ShiftOfTextInArrayToLeft(char* text,unsigned int SelectStart,unsigned int SelectEnd) {
+void ShiftOfTextInArrayToLeft(char* text,const unsigned SELECT_START,const unsigned SELECT_END) {
   if (nullptr != text) {
     unsigned int i = 0;
-    while(text[SelectStart + i] != '\0') {
-    text[SelectStart + i - 1] = text[SelectEnd + i - 1];
+    while(text[SELECT_START + i] != '\0') {
+    text[SELECT_START + i - 1] = text[SELECT_END + i - 1];
     ++i;
     }
-    text[SelectStart + i - 1] = text[SelectEnd + i - 1];
+    text[SELECT_START + i - 1] = text[SELECT_END + i - 1];
   }
 }
 
@@ -157,48 +154,50 @@ std::cout << "---> stop (terminate program) \n";
 std::cout << "Try first command:";
 
   while(true) {
-  ClearArray(command,COMMAND_SIZE);
+  ClearArray(command);
   std::cin >> command;
-  if (StringComapare(command, PRINT_COMAND, StringLength(PRINT_COMAND))) {
-    ClearArray(InpBuf, BUF_SIZE);
+  if (StringComapare(command, PRINT_COMAND)) {
+    ClearArray(InpBuf);
     scanf("%[^\n]",InpBuf);
     for (unsigned i = 0; i < (BUF_SIZE - 1); ++i) {
       InpBuf[i]=InpBuf[i + 1];
     }
-    PushApart(text, TEXT_SIZE, PointerInText, ArrayLength(InpBuf,BUF_SIZE));
-    InputPrint (text, InpBuf, &PointerInText,BUF_SIZE);
+    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf))) {
+    InputPrint (text, InpBuf, PointerInText,BUF_SIZE);
+    }
     continue;
   }
 //--------------------------------------------------------------------
-  if (StringComapare(command, SELECT_COMAND, StringLength(SELECT_COMAND))) {
+  if (StringComapare(command, SELECT_COMAND)) {
     SelectText (&SelectStart, &SelectLength);
     continue;
   }
 //--------------------------------------------------------------------
-  if (StringComapare(command, COPY_COMAND, StringLength(COPY_COMAND))) {
+  if (StringComapare(command, COPY_COMAND)) {
     if ((SelectStart == 0) || (SelectLength == 0)) continue;
     CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
     continue;
   }
 //--------------------------------------------------------------------
-  if (StringComapare(command, PASTE_COMAND, StringLength(PASTE_COMAND))) {
-    PushApart(text, TEXT_SIZE, PointerInText, ArrayLength(buffer,BUF_SIZE));
-    InputPrint (text, buffer, &PointerInText, BUF_SIZE);
+  if (StringComapare(command, PASTE_COMAND)) {
+    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf))) {
+    InputPrint (text, buffer, PointerInText, BUF_SIZE);
+    }
     SelectStart = 0;
     SelectLength = 0;
     continue;
   }
 //--------------------------------------------------------------------
-  if (StringComapare(command, MOVE_COMAND, StringLength(MOVE_COMAND))) {
+  if (StringComapare(command, MOVE_COMAND)) {
     MovePointer(command, &PointerInText, TEXT_SIZE, COMMAND_SIZE);
     continue;
   }
 //--------------------------------------------------------------------
-  if (StringComapare(command, CUT_COMAND, StringLength(CUT_COMAND))) {
+  if (StringComapare(command, CUT_COMAND)) {
     if (SelectLength == 0) {
       continue;
     }
-    ClearArray(buffer,BUF_SIZE);
+    ClearArray(buffer);
     CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
     ShiftOfTextInArrayToLeft(text, SelectStart, SelectLength + SelectStart);
     PointerInText -= SelectLength;
@@ -207,12 +206,12 @@ std::cout << "Try first command:";
     continue;
   }
 //--------------------------------------------------------------------
-  if (StringComapare(command, SHOW_COMAND, StringLength(SHOW_COMAND))) {
-      PrintTextFromArray(text, TEXT_SIZE);
+  if (StringComapare(command, SHOW_COMAND)) {
+      PrintTextFromArray(text);
       continue;
   }
 //--------------------------------------------------------------------
-    if (StringComapare(command, STOP_COMAND, StringLength(STOP_COMAND))) {
+    if (StringComapare(command, STOP_COMAND)) {
       break;
     }
 //--------------------------------------------------------------------
