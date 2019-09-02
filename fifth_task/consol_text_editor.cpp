@@ -2,6 +2,19 @@
 
 //g++ -std=c++14 -Wall -Werror -pedantic -O2  consol_text_editor.cpp
 
+namespace {
+const char* PRINT_COMAND = "print";
+const char* SELECT_COMAND = "select";
+const char* COPY_COMAND = "copy";
+const char* PASTE_COMAND = "paste";
+const char* MOVE_COMAND = "move";
+const char* CUT_COMAND = "cut";
+const char* SHOW_COMAND = "show";
+const char* STOP_COMAND = "stop";
+const char* LEFT_COMAND = "left";
+const char* RIGHT_COMAND = "right";
+}
+
 unsigned StringLength(const char* ARRAY) {
   if (ARRAY != nullptr) {
     unsigned i = 0;
@@ -47,7 +60,7 @@ void ClearArray(char* arr) {
 bool ArrayShift(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POINT, const unsigned SIZE) {
   if (nullptr == Array) return 0;
   if ((START_POINT + SIZE) > ARRAY_SIZE) {
-    std::cout << "This buffer is full.";
+    std::cout << "This buffer hasn't got enough space.";
     return false;
   }
   for (unsigned i = 0; (ARRAY_SIZE - SIZE - i) > START_POINT ; ++i) {
@@ -57,7 +70,7 @@ bool ArrayShift(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POI
 }
 
 void InputPrint (char* text, char* buf, unsigned& PointerInText) {
-  if ((nullptr != text) && (nullptr != buf) && (text != buf)) {
+  if ((nullptr != text) && (nullptr != buf) && (text != buf) && (StringLength(buf) > 0)) {
     const unsigned BUF_SIZE = StringLength(buf);
     for (unsigned i = 0; i < BUF_SIZE; ++i) {
       text[PointerInText + i] = buf[i];
@@ -81,14 +94,12 @@ void CopyTextFromArrayToArray (char* FromArr, char* ToArr, const unsigned int ST
   }
 }
 
-void MovePointer(char* command,unsigned* PointerInText,const unsigned TEXT_SIZE, const unsigned COMMAND_SIZE) {
-  if ((nullptr != command) && (nullptr != PointerInText)) {
-    const char* LEFT_COMAND = "left";
-    const char* RIGHT_COMAND = "right";
-    ClearArray(command);
-    std::cin >> command;
+void MovePointer(unsigned* PointerInText,const unsigned TEXT_SIZE, const unsigned COMMAND_SIZE) {
+  if (nullptr != PointerInText) {
+    const unsigned COMMAND_SIZE = 10;
+    char command[COMMAND_SIZE] {};
     unsigned int shift;
-    std::cin >> shift;
+    std::cin >> command >> shift;
     if (StringComapare(command, LEFT_COMAND)) {
       if (shift > *PointerInText) {
         std::cout << "Too big shift in left. "<< shift << " should be less/equal than " << *PointerInText << ". Try again: \n";
@@ -103,28 +114,27 @@ void MovePointer(char* command,unsigned* PointerInText,const unsigned TEXT_SIZE,
       *PointerInText = *PointerInText + shift;
     } else {
       std::cout << "Something wrong, try again\n";
-      return;
     }
   }
 }
 
 void ShiftOfTextInArrayToLeft(char* text,const unsigned SELECT_START,const unsigned SELECT_END) {
-  if (nullptr != text) {
+  if ((nullptr != text) || (SELECT_START < 1)) {
     unsigned int i = 0;
     while(text[SELECT_START + i] != '\0') {
     text[SELECT_START + i - 1] = text[SELECT_END + i - 1];
     ++i;
     }
-    text[SELECT_START + i - 1] = text[SELECT_END + i - 1];
+    text[SELECT_START + i - 1] = '\0';
   }
 }
 
 
 int main()
 {
-    const unsigned TEXT_SIZE = 200;
-    const unsigned COMMAND_SIZE = 10;
-    const unsigned BUF_SIZE = 50;
+const unsigned TEXT_SIZE = 200;
+const unsigned COMMAND_SIZE = 10;
+const unsigned BUF_SIZE = 50;
 char command[COMMAND_SIZE] {};
 char text[TEXT_SIZE] {};
 char buffer[BUF_SIZE] {};
@@ -132,14 +142,6 @@ char InpBuf[BUF_SIZE] {};
 unsigned int PointerInText = 0;
 unsigned int SelectStart = 0;
 unsigned int SelectLength = 0;
-const char* PRINT_COMAND = "print";
-const char* SELECT_COMAND = "select";
-const char* COPY_COMAND = "copy";
-const char* PASTE_COMAND = "paste";
-const char* MOVE_COMAND = "move";
-const char* CUT_COMAND = "cut";
-const char* SHOW_COMAND = "show";
-const char* STOP_COMAND = "stop";
 std::cout << "Hello! It is simple console text editor.\n";
 std::cout << "Here is comands that you can use: \n";
 std::cout << "---> print some_text \n";
@@ -157,11 +159,8 @@ std::cout << "Try first command:";
   if (StringComapare(command, PRINT_COMAND)) {
     ClearArray(InpBuf);
     scanf("%[^\n]",InpBuf);
-    for (unsigned i = 0; i < (BUF_SIZE - 1); ++i) {
-      InpBuf[i]=InpBuf[i + 1];
-    }
-    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf))) {
-    InputPrint (text, InpBuf, PointerInText);
+    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf + 1))) {
+    InputPrint (text, InpBuf + 1, PointerInText);
     }
     continue;
   }
@@ -172,7 +171,9 @@ std::cout << "Try first command:";
   }
 //--------------------------------------------------------------------
   if (StringComapare(command, COPY_COMAND)) {
-    if ((SelectStart == 0) || (SelectLength == 0)) continue;
+    if ((SelectStart == 0) || (SelectLength == 0)) {
+      continue;
+    }
     CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
     continue;
   }
@@ -187,7 +188,7 @@ std::cout << "Try first command:";
   }
 //--------------------------------------------------------------------
   if (StringComapare(command, MOVE_COMAND)) {
-    MovePointer(command, &PointerInText, TEXT_SIZE, COMMAND_SIZE);
+    MovePointer(&PointerInText, TEXT_SIZE, COMMAND_SIZE);
     continue;
   }
 //--------------------------------------------------------------------
