@@ -1,8 +1,10 @@
 #include <iostream>
 
+//g++ -std=c++14 -Wall -Werror -pedantic -O2  singleton.cpp
+
 class OneObj {
   public:
-    static OneObj& Init() {
+    static OneObj& getInstance() {
       static OneObj OneObj;
       return OneObj;
     }
@@ -19,13 +21,12 @@ class OneObj {
 };
 
 int main () {
-  OneObj& FirstObj = OneObj::Init();
-  OneObj& SecondObj = OneObj::Init();
+  OneObj& FirstObj = OneObj::getInstance();
+  OneObj& SecondObj = OneObj::getInstance();
 
   std::cout << "1. First object: " << FirstObj.change() << "\n";
   std::cout << "2. Second object: " << SecondObj.change() << "\n";
   std::cout << "3. First object: " << FirstObj.change() << "\n";
   std::cout << "4. Second object: " << SecondObj.change() << "\n";
-  FirstObj.~OneObj();
   std::cout << "5. First object: " << FirstObj.change() << "\n";
 }
