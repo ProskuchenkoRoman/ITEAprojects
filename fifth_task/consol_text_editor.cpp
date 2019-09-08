@@ -52,16 +52,20 @@ void ClearArray(char* arr) {
   if (arr != nullptr) {
     unsigned i = 0;
     while (arr[i]) {
-        arr[i++] = '\0';
+      arr[i++] = '\0';
     }
   }
 }
 
 bool ArrayShift(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POINT, const unsigned SIZE) {
-  if (nullptr == Array) return 0;
-  if ((START_POINT + SIZE) > ARRAY_SIZE) {
-    std::cout << "This buffer hasn't got enough space.";
-    return false;
+  if ((nullptr == Array) || (START_POINT + SIZE >= ARRAY_SIZE)) return false;
+  for (unsigned i = 0; i < SIZE; ++i) {
+    if ('\0' != Array[ARRAY_SIZE - 1 - i]) {
+      std::cout << "This buffer hasn't got enough space.\n";
+      std::cout << "Space left for " << i << " characters.\n";
+      std::cout << "Or use comands 'select' and 'cut'.\n";
+      return false;
+    }
   }
   for (unsigned i = 0; (ARRAY_SIZE - SIZE - i) > START_POINT ; ++i) {
     Array[ARRAY_SIZE - i - 1] = Array[ARRAY_SIZE - i - SIZE - 1];
@@ -69,11 +73,11 @@ bool ArrayShift(char* Array, const unsigned ARRAY_SIZE, const unsigned START_POI
   return true;
 }
 
-void InputPrint (char* text, char* buf, unsigned& PointerInText) {
-  if ((nullptr != text) && (nullptr != buf) && (text != buf) && (StringLength(buf) > 0)) {
-    const unsigned BUF_SIZE = StringLength(buf);
+void InputPrint (char* text,const char* BUF, unsigned& PointerInText) {
+  if ((nullptr != text) && (nullptr != BUF) && (text != BUF) && (StringLength(BUF) > 0)) {
+    const unsigned BUF_SIZE = StringLength(BUF);
     for (unsigned i = 0; i < BUF_SIZE; ++i) {
-      text[PointerInText + i] = buf[i];
+      text[PointerInText + i] = BUF[i];
     }
     PointerInText += BUF_SIZE;
   }
@@ -94,7 +98,7 @@ void CopyTextFromArrayToArray (char* FromArr, char* ToArr, const unsigned int ST
   }
 }
 
-void MovePointer(unsigned* PointerInText,const unsigned TEXT_SIZE, const unsigned COMMAND_SIZE) {
+void MovePointer(unsigned* PointerInText,const unsigned TEXT_SIZE) {
   if (nullptr != PointerInText) {
     const unsigned COMMAND_SIZE = 10;
     char command[COMMAND_SIZE] {};
@@ -130,92 +134,85 @@ void ShiftOfTextInArrayToLeft(char* text,const unsigned SELECT_START,const unsig
 }
 
 
-int main()
-{
-const unsigned TEXT_SIZE = 200;
-const unsigned COMMAND_SIZE = 10;
-const unsigned BUF_SIZE = 50;
-char command[COMMAND_SIZE] {};
-char text[TEXT_SIZE] {};
-char buffer[BUF_SIZE] {};
-char InpBuf[BUF_SIZE] {};
-unsigned int PointerInText = 0;
-unsigned int SelectStart = 0;
-unsigned int SelectLength = 0;
-std::cout << "Hello! It is simple console text editor.\n";
-std::cout << "Here is comands that you can use: \n";
-std::cout << "---> print some_text \n";
-std::cout << "---> select number_of_first_char length\n";
-std::cout << "---> copy (copy selected part of text) \n";
-std::cout << "---> paste (paste text from buffer from pointer in text) \n";
-std::cout << "---> move left/right (move pointer in text) \n";
-std::cout << "---> show (see text with which you work) \n";
-std::cout << "---> stop (terminate program) \n";
-std::cout << "Try first command:";
-
+int main () {
+  const unsigned TEXT_SIZE = 200;
+  const unsigned COMMAND_SIZE = 10;
+  const unsigned BUF_SIZE = 50;
+  char command[COMMAND_SIZE] {};
+  char text[TEXT_SIZE] {};
+  char buffer[BUF_SIZE] {};
+  char InpBuf[BUF_SIZE] {};
+  unsigned int PointerInText = 0;
+  unsigned int SelectStart = 0;
+  unsigned int SelectLength = 0;
+  std::cout << "Hello! It is simple console text editor.\n";
+  std::cout << "Here is comands that you can use: \n";
+  std::cout << "---> print some_text \n";
+  std::cout << "---> select number_of_first_char length\n";
+  std::cout << "---> copy (copy selected part of text) \n";
+  std::cout << "---> paste (paste text from buffer from pointer in text) \n";
+  std::cout << "---> move left/right (move pointer in text) \n";
+  std::cout << "---> show (see text with which you work) \n";
+  std::cout << "---> stop (terminate program) \n";
+  std::cout << "Try first command:\n";
   while(true) {
-  ClearArray(command);
-  std::cin >> command;
-  if (StringComapare(command, PRINT_COMAND)) {
-    ClearArray(InpBuf);
-    scanf("%[^\n]",InpBuf);
-    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf + 1))) {
-    InputPrint (text, InpBuf + 1, PointerInText);
-    }
-    continue;
-  }
-//--------------------------------------------------------------------
-  if (StringComapare(command, SELECT_COMAND)) {
-    SelectText (&SelectStart, &SelectLength);
-    continue;
-  }
-//--------------------------------------------------------------------
-  if (StringComapare(command, COPY_COMAND)) {
-    if ((SelectStart == 0) || (SelectLength == 0)) {
+    ClearArray(command);
+    std::cin >> command;
+    if (StringComapare(command, PRINT_COMAND)) {
+      ClearArray(InpBuf);
+      scanf("%[^\n]",InpBuf);
+      if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(InpBuf + 1))) {
+        InputPrint (text, InpBuf + 1, PointerInText);
+      }
       continue;
     }
-    CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
-    continue;
-  }
-//--------------------------------------------------------------------
-  if (StringComapare(command, PASTE_COMAND)) {
-    if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(buffer))) {
-    InputPrint (text, buffer, PointerInText);
-    }
-    SelectStart = 0;
-    SelectLength = 0;
-    continue;
-  }
-//--------------------------------------------------------------------
-  if (StringComapare(command, MOVE_COMAND)) {
-    MovePointer(&PointerInText, TEXT_SIZE, COMMAND_SIZE);
-    continue;
-  }
-//--------------------------------------------------------------------
-  if (StringComapare(command, CUT_COMAND)) {
-    if (SelectLength == 0) {
+    if (StringComapare(command, SELECT_COMAND)) {
+      SelectText (&SelectStart, &SelectLength);
       continue;
     }
-    ClearArray(buffer);
-    CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
-    ShiftOfTextInArrayToLeft(text, SelectStart, SelectLength + SelectStart);
-    PointerInText -= SelectLength;
-    SelectStart = 0;
-    SelectLength = 0;
-    continue;
-  }
-//--------------------------------------------------------------------
-  if (StringComapare(command, SHOW_COMAND)) {
+    if (StringComapare(command, COPY_COMAND)) {
+      if ((SelectStart == 0) || (SelectLength == 0)) {
+        std::cout << "Wrong 'select' parametrs.";
+        continue;
+      }
+      CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
+      continue;
+    }
+    if (StringComapare(command, PASTE_COMAND)) {
+      if (ArrayShift(text, TEXT_SIZE,PointerInText, StringLength(buffer))) {
+        InputPrint (text, buffer, PointerInText);
+      }
+      SelectStart = 0;
+      SelectLength = 0;
+      continue;
+    }
+    if (StringComapare(command, MOVE_COMAND)) {
+      MovePointer(&PointerInText, TEXT_SIZE);
+      for (unsigned i = 0; i <= PointerInText; ++i) {
+        text[i] = ('\0' == text[i] ? ' ' : text[i]);
+      }
+      continue;
+    }
+    if (StringComapare(command, CUT_COMAND)) {
+      ClearArray(buffer);
+      if ((0 == SelectLength) || (0 == SelectStart)) {
+        std::cout << "Wrong 'select' parametrs.";
+        continue;
+      }
+      CopyTextFromArrayToArray (text, buffer, SelectStart, SelectLength);
+      ShiftOfTextInArrayToLeft(text, SelectStart, SelectLength + SelectStart);
+      PointerInText -= SelectLength;
+      SelectStart = 0;
+      SelectLength = 0;
+      continue;
+    }
+    if (StringComapare(command, SHOW_COMAND)) {
       PrintTextFromArray(text);
       continue;
-  }
-//--------------------------------------------------------------------
+    }
     if (StringComapare(command, STOP_COMAND)) {
       break;
     }
-//--------------------------------------------------------------------
-
-      std::cout << "Wrong comand. Please try again: " << std::endl;
-
+    std::cout << "Wrong comand. Please try again: " << std::endl;
   }
 }
